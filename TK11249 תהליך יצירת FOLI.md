@@ -608,55 +608,6 @@ TO BE DECIDED: Should missing technician/fallback faulty bins remain a setup fai
 | Duplicate Remove / same destination | Attempts Inventory Transfer and may fail with generic NetSuite same-bin error | Separate fix recommended: fail clearly before creating transaction. |
 | Legacy customer bins | Primary destination today | Do not use as fallback for this new Install destination logic. |
 
-## Customer Decisions Needed
-
-1. Confirm the new destination model: one `Region Default Bin` per region default customer location.
-2. Confirm every customer must have a Phytech ID and `cseg_region` before FIL processing.
-3. Confirm the authoritative source for region default customer location: direct field on Region record, or a strict location search rule.
-4. Confirm the new bin type name and internal id for `Region Default Bin`.
-5. Confirm that legacy `getBin` should not be used as fallback for serialized Install destination resolution.
-6. Confirm whether Sales Order / Item Fulfillment installs should remain as-is.
-7. Confirm whether Purchase Orders are expected to participate in Field Order Line install/remove processing. The inspected helper does not currently include a PO branch.
-8. Confirm whether related items should still move with the parent item into the region default bin.
-9. Confirm whether non-serialized Install behavior is intentional.
-10. Confirm whether non-serialized Remove behavior is intentional.
-11. Confirm whether removed/faulty serials should continue moving to technician/fallback `Tech Faulty` bins.
-12. Confirm whether each region should instead have one required faulty destination location/bin.
-13. Confirm whether the region faulty destination is the same location as the region default customer location or a separate MRB/faulty location.
-14. Confirm whether Remove duplicate/same-bin validation should be handled as a separate fix in the same deployment or later.
-
-## Recommended Implementation Plan
-
-1. Add new bin type value `Region Default Bin`.
-2. Configure one default customer location per region.
-3. Create one `Region Default Bin` at each region default customer location.
-4. Add `getBinV2` to `Be.Lib.Installation_FOI.js`.
-5. Replace the serialized Install destination call with `getBinV2(rec)`.
-6. Do not call legacy `getBin` as fallback for this path.
-7. Add clear errors for missing customer, missing Phytech ID, missing region, missing default location, and missing region default bin.
-8. Validate that the serial-location saved search finds serials installed in new Region Default Bins.
-9. Confirm the future Remove faulty-bin model.
-10. If regional faulty destination is approved, add region faulty destination setup and update Remove destination resolution.
-11. Add clear duplicate Remove validation if included in the same deployment.
-12. Test in Sandbox using both historical incident records and clean payloads.
-13. Deploy after the customer confirms the open decisions.
-
-## Suggested Test Cases
-
-| Test | Input | Expected result |
-| --- | --- | --- |
-| Historical incident replay | `FIL1365924`-style CA customer, blank area/plot/project | Positive Install IA goes to CA region default bin, not WA. |
-| Another CA serial | `FIL1365912` / serial `2479279` style data | Positive Install IA goes to CA region default bin. |
-| Full legacy payload | Customer has area/plot/project/account values | `getBinV2` still wins; legacy `getBin` is not used. |
-| Missing customer region | Customer has no `cseg_region` | FIL fails with clear customer-region setup error before destination IA. |
-| Missing Phytech ID | Customer has no Phytech ID | FIL fails with clear customer setup error. |
-| Missing region default location | Customer region has no configured default customer location | FIL fails with clear region-location setup error. |
-| Missing region default bin | Region location exists but no bin type `Region Default Bin` | FIL fails with clear region-bin setup error. |
-| Remove after getBinV2 install, current faulty model | Serial sits in region default bin, technician is populated | Remove transfers from region default customer location to technician Tech Faulty bin. |
-| Remove after getBinV2 install, regional faulty model | Serial sits in region default bin, region faulty destination is configured | Remove transfers from region default customer location to region faulty destination. |
-| Missing region faulty destination | Regional faulty model is approved but region has no faulty destination | FIL fails with clear region faulty setup error. |
-| Missing Tech Faulty bin under current model | Current Remove model remains but destination location has no Tech Faulty bin | FIL fails with clear faulty-bin setup error. |
-| Duplicate Remove | Serial already in target faulty destination | FIL fails with clear duplicate Remove error before creating Inventory Transfer. |
 
 ## Customer-Facing Summary
 
