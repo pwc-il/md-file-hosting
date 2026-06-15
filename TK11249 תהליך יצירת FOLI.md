@@ -609,7 +609,7 @@ TO BE DECIDED: Should missing technician/fallback faulty bins remain a setup fai
 | Legacy customer bins | Primary destination today | Do not use as fallback for this new Install destination logic. |
 
 
-## Customer-Facing Summary
+## Summary
 
 The proposed fix is to stop resolving installed customer inventory by plot/project/area/customer-bin metadata. Instead, NetSuite will resolve the destination from the customer region. Each region will have one default customer location and one default installation bin. All serialized installed inventory for customers in that region will be added to that bin.
 
