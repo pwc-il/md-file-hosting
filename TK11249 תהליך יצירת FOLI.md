@@ -40,7 +40,6 @@ Non-serialized item behavior
 Sales Order / Item Fulfillment business behavior
 Related item business behavior
 Duplicate Remove / same-bin validation fix
-Purchase Order logic
 ```
 
 Remove is included in this document because the customer needs to understand that Remove does not use `getBin` today. However, if the customer stops maintaining technician/customer-style bin structures and wants faulty inventory centralized by region, then Remove destination logic must also be changed.
