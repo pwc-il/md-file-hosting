@@ -600,7 +600,6 @@ TO BE DECIDED: Should missing technician/fallback faulty bins remain a setup fai
 | Serialized Install positive IA | Positive IA into returned bin/location | Same transaction, new destination. |
 | Install serial installation date | Updated after positive IA | No change, but location is region default location. |
 | Sales Order / Item Fulfillment | Existing IF path when SO found | Pending business confirmation. |
-| Purchase Order | No inspected PO path in Field Order Line helper | No change unless business identifies a separate PO requirement. |
 | Related items | Existing related-item search and movement | Pending business confirmation. |
 | Non-serialized Install | No getBin call | No change. |
 | Remove / Uninstall source lookup | Finds serial current location and transfers it out | No direct getBinV2 change; validate saved search finds serials in Region Default Bins. |
